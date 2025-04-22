@@ -3,3 +3,6 @@
 2. Worked on building database and a non-working alogrithm
 
 3. Worked more on setting up the framework for the webapp on Salesforce OrgFARM platform
+
+SQL Username - root
+SQL Password - GradescopeDev
