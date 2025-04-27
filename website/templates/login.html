@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #1f2d1f, #3a4e3a); /* muted green gradient */
+      color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background: #2b2f2b;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+    }
+
+    .login-container h1 {
+      margin-bottom: 30px;
+      font-size: 2rem;
+      color: #d2f5d2;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      background-color: #3b403b;
+      color: #ffffff;
+    }
+
+    .login-container input::placeholder {
+      color: #a5bba5;
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 12px 15px;
+      background-color: #4d7253;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .login-container button:hover {
+      background-color: #3d5c44;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>GradeScope</h1>
+    <form action="/login" method="POST">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</body>
+</html>
