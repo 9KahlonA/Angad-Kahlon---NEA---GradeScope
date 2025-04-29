@@ -13,6 +13,8 @@ def create_app():
 
     # Register blueprints
     from .auth import auth
+    from .views import views  # Import the views blueprint
     app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(views, url_prefix='/')  # Register the views blueprint
 
     return app

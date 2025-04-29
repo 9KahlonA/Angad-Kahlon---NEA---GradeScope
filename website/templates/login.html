@@ -8,7 +8,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: linear-gradient(to right, #1f2d1f, #3a4e3a);
+      background: linear-gradient(to right, #1f2d1f, #3a4e3a); /* muted green gradient */
       color: #f0f0f0;
       display: flex;
       justify-content: center;
@@ -45,6 +45,10 @@
       color: #ffffff;
     }
 
+    .login-container input::placeholder {
+      color: #a5bba5;
+    }
+
     .login-container button {
       width: 100%;
       padding: 12px 15px;
@@ -62,31 +66,61 @@
     .login-container button:hover {
       background-color: #3d5c44;
     }
+
+    /* Add loading animation styles */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
   </style>
+  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 </head>
 <body>
   <div class="login-container">
     <h1>GradeScope</h1>
-    <!-- Display flash messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul class="flash-messages">
-          {% for category, message in messages %}
-            <li class="{{ category }}">{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
     <form method="POST" action="{{ url_for('auth.login') }}">
-        {% if csrf_token %}
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        {% endif %}
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <button type="submit">Login</button>
-    </form>
+    {% if csrf_token %}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% endif %}
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <button type="submit">Login</button>
+</form>
+  </div>
+  <div class="loading-overlay">
+    <div class="spinner"></div>
   </div>
 </body>
 </html>

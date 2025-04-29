@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from .models import User
-from . import db
+from .models import User  # Ensure this import exists
 
 auth = Blueprint('auth', __name__)
 
@@ -12,7 +11,7 @@ def login():
         password = request.form.get('password')
         print(f"Username: {username}, Password: {password}")  # Debug statement
 
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).first()  # Ensure this matches the database column
         if user:
             print(f"User found: {user.username}")  # Debug statement
             print(f"Stored password hash: {user.password_hash}")  # Debug statement
@@ -30,4 +29,4 @@ def login():
 
 @auth.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('dashboard.html')  # Updated to use the templates directory
