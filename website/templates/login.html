@@ -8,7 +8,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: linear-gradient(to right, #1f2d1f, #3a4e3a); /* muted green gradient */
+      background: linear-gradient(to right, #1f2d1f, #3a4e3a);
       color: #f0f0f0;
       display: flex;
       justify-content: center;
@@ -45,10 +45,6 @@
       color: #ffffff;
     }
 
-    .login-container input::placeholder {
-      color: #a5bba5;
-    }
-
     .login-container button {
       width: 100%;
       padding: 12px 15px;
@@ -71,10 +67,25 @@
 <body>
   <div class="login-container">
     <h1>GradeScope</h1>
-    <form action="/login" method="POST">
-      <input type="text" name="username" placeholder="Username" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <button type="submit">Login</button>
+    <!-- Display flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-messages">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('auth.login') }}">
+        {% if csrf_token %}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% endif %}
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Login</button>
     </form>
   </div>
 </body>

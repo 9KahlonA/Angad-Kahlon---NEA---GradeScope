@@ -1,16 +1,18 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'GradesScopeDEV' # Change this to a random secret key in production
+    app.config['SECRET_KEY'] = 'your_secret_key'  # Ensure this is set
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:GradescopeDev@localhost/gradescope'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+    db.init_app(app)
 
-    from .views import views
+    # Register blueprints
     from .auth import auth
-
-    app.register_blueprint(views, name="VIEWS", url_prefix='/')
-    app.register_blueprint(auth, name="AUTH", url_prefix='/')
+    app.register_blueprint(auth, url_prefix='/')
 
     return app
-
-# This file is reponsible for creating the instance for the Flask app. DO NOT MODIFY THIS FILE.
