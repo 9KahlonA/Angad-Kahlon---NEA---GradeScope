@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Student Details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #1f2d1f, #3a4e3a);
+      color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #2b2f2b;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      text-align: left;
+      width: 90%;
+      max-width: 600px;
+      margin-top: 20px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-top: 10px;
+    }
+
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #4d7253;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #3d5c44;
+    }
+
+    .success {
+      color: #4caf50;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Edit Student Details</h1>
+    {% if success %}
+    <p class="success">Student details updated successfully!</p>
+    {% endif %}
+    <form method="POST"> <!-- Ensure the method is POST -->
+      <label for="first_name">First Name:</label>
+      <input type="text" id="first_name" name="first_name" value="{{ student.first_name }}" required>
+
+      <label for="last_name">Last Name:</label>
+      <input type="text" id="last_name" name="last_name" value="{{ student.last_name }}" required>
+
+      <label for="ethnicity">Ethnicity:</label>
+      <input type="text" id="ethnicity" name="ethnicity" value="{{ student.ethnicity }}">
+
+      <label for="home_language">Home Language:</label>
+      <input type="text" id="home_language" name="home_language" value="{{ student.home_language }}">
+
+      <label for="reading_age">Reading Age:</label>
+      <input type="number" id="reading_age" name="reading_age" step="0.1" value="{{ student.reading_age }}">
+
+      <button type="submit">Save Changes</button>
+    </form>
+  </div>
+</body>
+</html>

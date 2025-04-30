@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>English Literature - Classes</title>
+  <title>{{ subject }} - Class Students</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,22 +13,24 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
+      justify-content: flex-start; /* Align content to the top */
+      min-height: 100vh;
+      overflow-x: hidden; /* Prevent horizontal scrolling */
     }
 
     .container {
       background: #2b2f2b;
-      padding: 30px;
+      padding: 20px;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
       text-align: center;
-      width: 100%;
-      max-width: 500px;
+      width: 90%; /* Adjust width to fit within the window */
+      max-width: 800px;
+      margin-top: 20px; /* Add spacing from the top */
     }
 
     h1 {
-      font-size: 2.5rem;
+      font-size: 2rem;
       margin-bottom: 10px;
     }
 
@@ -55,30 +57,29 @@
     tr:hover {
       background-color: #3d5c44;
     }
-
-    a {
-      color: #f0f0f0;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>English Literature - Classes</h1>
+    <h1>{{ subject }} - Class Students</h1>
     <table>
       <thead>
         <tr>
-          <th>Class Code</th>
+          <th>Student Name</th>
+          <th>Column 1</th>
+          <th>Column 2</th>
+          <th>Column 3</th>
+          <th>Column 4</th>
         </tr>
       </thead>
       <tbody>
-        {% for class in classes %}
+        {% for student in students %}
         <tr>
-          <td><a href="{{ url_for('views.literature_class_students', class_id=class.class_id) }}">{{ class.class_code }}</a></td>
+          <td><a href="{{ url_for('views.student_details', student_id=student.student_id) }}">{{ student.first_name }} {{ student.last_name }}</a></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
         </tr>
         {% endfor %}
       </tbody>

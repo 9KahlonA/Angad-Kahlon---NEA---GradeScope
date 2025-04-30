@@ -78,7 +78,7 @@
       <tbody>
         {% for year_group in year_groups %}
         <tr>
-          <td><a href="{{ url_for('views.language_classes', year_group_id=year_group.id) }}">{{ year_group.year }}</a></td>
+          <td><a href="{{ url_for('views.language_classes', year_group_id=year_group.yeargroup_id) }}">{{ year_group.year }}</a></td>
         </tr>
         {% endfor %}
       </tbody>

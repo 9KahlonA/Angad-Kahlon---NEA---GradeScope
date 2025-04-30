@@ -15,14 +15,15 @@ class User(db.Model):
 
 class YearGroup(db.Model):
     __tablename__ = 'yeargroups'  # Correct table name
-    id = db.Column('yeargroup_id', db.Integer, primary_key=True)  # Map 'id' to 'yeargroups_id'
-    year = db.Column(db.String(100), nullable=False)  # Correct column name
+    __table_args__ = {'schema': 'gradescope'}  # Specify the schema
+    yeargroup_id = db.Column(db.Integer, primary_key=True)
+    year = db.Column(db.String(50), nullable=False)
 
 class Class(db.Model):
-    __tablename__ = 'classes'  # Correct table name
-    id = db.Column('class_id', db.Integer, primary_key=True)  # Map 'id' to 'class_id'
-    code = db.Column('class_code', db.String(10), nullable=False)  # Correct column name
-    yeargroup_id = db.Column(db.Integer, db.ForeignKey('yeargroups.yeargroups_id'), nullable=False)
+    __tablename__ = 'classes'
+    class_id = db.Column(db.Integer, primary_key=True)  # Correct column name
+    class_code = db.Column(db.String(50), nullable=False)  # Correct column name
+    yeargroup_id = db.Column(db.Integer, db.ForeignKey('gradescope.yeargroups.yeargroup_id'), nullable=False)  # Correct column name
 
 class Subject(db.Model):
     __tablename__ = 'subjects'  # Correct table name
@@ -38,10 +39,14 @@ class Grade(db.Model):
     __tablename__ = 'grades'  # Correct table name
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.String(10), nullable=False)
-    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('students.student_id'), nullable=False)
 
 class Student(db.Model):
-    __tablename__ = 'students'  # Correct table name
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(150), nullable=False)
-    class_id = db.Column(db.Integer, db.ForeignKey('classes.id'), nullable=False)
+    __tablename__ = 'students'
+    student_id = db.Column(db.Integer, primary_key=True)  # Ensure this matches the database column
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    ethnicity = db.Column(db.String(50), nullable=True)  # Ensure this field exists
+    home_language = db.Column(db.String(50), nullable=True)  # Ensure this field exists
+    reading_age = db.Column(db.Float, nullable=True)  # Ensure this field exists
+    class_id = db.Column(db.Integer, db.ForeignKey('classes.class_id'), nullable=False)

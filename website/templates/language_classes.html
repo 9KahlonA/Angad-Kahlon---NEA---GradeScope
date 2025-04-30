@@ -78,7 +78,7 @@
       <tbody>
         {% for class in classes %}
         <tr>
-          <td>{{ class.code }}</td>
+          <td><a href="{{ url_for('views.language_class_students', class_id=class.class_id) }}">{{ class.class_code }}</a></td>
         </tr>
         {% endfor %}
       </tbody>
