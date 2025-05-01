@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>{{ subject }} - Class Students</title>
   <style>
+    /* General styling for the body to set font, background, and layout */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -18,6 +19,7 @@
       overflow-x: hidden; /* Prevent horizontal scrolling */
     }
 
+    /* Styling for the container holding the table */
     .container {
       background: #2b2f2b;
       padding: 20px;
@@ -29,31 +31,37 @@
       margin-top: 20px; /* Add spacing from the top */
     }
 
+    /* Styling for the header */
     h1 {
       font-size: 2rem;
       margin-bottom: 10px;
     }
 
+    /* Styling for the table */
     table {
       width: 100%;
       border-collapse: collapse;
       margin: 20px 0;
     }
 
+    /* Styling for table borders */
     table, th, td {
       border: 1px solid #ddd;
     }
 
+    /* Styling for table cells */
     th, td {
       padding: 10px;
       text-align: left;
     }
 
+    /* Styling for table headers */
     th {
       background-color: #4d7253;
       color: white;
     }
 
+    /* Hover effect for table rows */
     tr:hover {
       background-color: #3d5c44;
     }
@@ -62,24 +70,31 @@
 <body>
   <div class="container">
     <h1>{{ subject }} - Class Students</h1>
+    <!-- Table displaying students and their grades -->
     <table>
       <thead>
         <tr>
           <th>Student Name</th>
-          <th>Column 1</th>
-          <th>Column 2</th>
-          <th>Column 3</th>
-          <th>Column 4</th>
+          <!-- Loop through terms and display each as a column -->
+          {% for column in terms_columns %}
+          <th>{{ column }}</th>
+          {% endfor %}
         </tr>
       </thead>
       <tbody>
+        <!-- Loop through students and display their details -->
         {% for student in students %}
         <tr>
-          <td><a href="{{ url_for('views.student_details', student_id=student.student_id) }}">{{ student.first_name }} {{ student.last_name }}</a></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td>
+            <!-- Link to view details of the selected student -->
+            <a href="{{ url_for('views.student_details', student_id=student.student_id) }}">
+              {{ student.first_name }} {{ student.last_name }}
+            </a>
+          </td>
+          <!-- Loop through terms and display grades for each student -->
+          {% for column in terms_columns %}
+          <td>{{ student_grades[student.student_id][column] }}</td>
+          {% endfor %}
         </tr>
         {% endfor %}
       </tbody>

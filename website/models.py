@@ -30,16 +30,26 @@ class Subject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
 
-class Term(db.Model):
-    __tablename__ = 'terms'  # Correct table name
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+class Terms(db.Model):
+    __tablename__ = 'terms'
+    term_id = db.Column(db.Integer, primary_key=True)
+    term_name = db.Column(db.String(100), nullable=False)
 
-class Grade(db.Model):
-    __tablename__ = 'grades'  # Correct table name
-    id = db.Column(db.Integer, primary_key=True)
-    value = db.Column(db.String(10), nullable=False)
-    student_id = db.Column(db.Integer, db.ForeignKey('students.student_id'), nullable=False)
+    def __repr__(self):
+        return f"<Terms(term_id={self.term_id}, term_name='{self.term_name}')>"
+
+class Grades(db.Model):
+    __tablename__ = 'grades'
+    __table_args__ = {'extend_existing': True}  # Allow redefinition if the table already exists
+
+    grade_id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.student_id'), nullable=False)
+    subject_id = db.Column(db.Integer, nullable=False)  # Assuming subject IDs are predefined
+    term_id = db.Column(db.Integer, db.ForeignKey('terms.term_id'), nullable=False)
+    grade = db.Column(db.String(10), nullable=False)  # Grade as a string (e.g., "A", "B", etc.)
+
+    def __repr__(self):
+        return f"<Grades(grade_id={self.grade_id}, student_id={self.student_id}, subject_id={self.subject_id}, term_id={self.term_id}, grade='{self.grade}')>"
 
 class Student(db.Model):
     __tablename__ = 'students'

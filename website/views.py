@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request
-from .models import YearGroup, Class, Student  # Assuming these models exist
+from .models import YearGroup, Class, Student, Terms, Grades  # Ensure Grades is imported
+from . import db  # Import the db object
 
 views = Blueprint('views', __name__)
 
@@ -37,7 +38,8 @@ def student_details(student_id):
         student.home_language = request.form.get('home_language')
         student.reading_age = request.form.get('reading_age')
         db.session.commit()  # Save changes to the database
-        return render_template('student_details.html', student=student, success=True)
+        terms_columns = [term.term_name for term in Terms.query.order_by(Terms.term_id.asc()).limit(4).all()]  # Fetch term_name values
+        return render_template('student_details.html', student=student, terms_columns=terms_columns, success=True)
 
     # Fetch the class and year group details
     class_info = Class.query.filter_by(class_id=student.class_id).first()
@@ -47,11 +49,52 @@ def student_details(student_id):
         .filter(Class.class_id == student.class_id)
         .first()
     )
-    return render_template('student_details.html', student=student, class_info=class_info, year_group=year_group)
+    terms_columns = [term.term_name for term in Terms.query.order_by(Terms.term_id.asc()).limit(4).all()]  # Fetch term_name values
+    return render_template('student_details.html', student=student, class_info=class_info, year_group=year_group, terms_columns=terms_columns)
 
 @views.route('/language/class/<int:class_id>')
 def language_class_students(class_id):
-    students = Student.query.filter_by(class_id=class_id).with_entities(
-        Student.student_id, Student.first_name, Student.last_name, Student.class_id
-    ).all()  # Fetch students for the class
-    return render_template('class_students.html', subject="Language", students=students)
+    students = Student.query.filter_by(class_id=class_id).all()  # Fetch students for the class
+    terms = Terms.query.order_by(Terms.term_id.asc()).limit(4).all()  # Fetch term_name values
+    terms_columns = [term.term_name for term in terms]
+
+    # Fetch grades for each student for each term for the "Language" subject
+    student_grades = {}
+    for student in students:
+        grades = {}
+        for term in terms:
+            grade = (
+                Grades.query.filter_by(student_id=student.student_id, term_id=term.term_id, subject_id=1)  # Assuming subject_id=1 is for "Language"
+                .first()
+            )
+            grades[term.term_name] = grade.grade if grade else "N/A"  # Fetch grade or default to "N/A"
+        student_grades[student.student_id] = grades
+
+    return render_template('class_students.html', subject="Language", students=students, terms_columns=terms_columns, student_grades=student_grades)
+
+@views.route('/literature/class/<int:class_id>')
+def literature_class_students(class_id):
+    students = Student.query.filter_by(class_id=class_id).all()  # Fetch students for the class
+    terms = Terms.query.order_by(Terms.term_id.asc()).limit(4).all()  # Fetch term_name values
+    terms_columns = [term.term_name for term in terms]
+
+    # Fetch grades for each student for each term for the "Literature" subject
+    student_grades = {}
+    for student in students:
+        grades = {}
+        for term in terms:
+            grade = (
+                Grades.query.filter_by(student_id=student.student_id, term_id=term.term_id, subject_id=2)  # Assuming subject_id=2 is for "Literature"
+                .first()
+            )
+            grades[term.term_name] = grade.grade if grade else "N/A"  # Fetch grade or default to "N/A"
+        student_grades[student.student_id] = grades
+
+    return render_template('class_students.html', subject="Literature", students=students, terms_columns=terms_columns, student_grades=student_grades)
+
+@views.route('/class/<int:class_id>')
+def class_page(class_id):
+    class_name = Class.query.filter_by(class_id=class_id).first().class_name  # Fetch class name
+    students = Student.query.filter_by(class_id=class_id).all()  # Fetch students for the class
+    terms_columns = [term.term_name for term in Terms.query.order_by(Terms.term_id.asc()).limit(4).all()]  # Fetch term_name values
+    return render_template('class_page.html', class_name=class_name, students=students, terms_columns=terms_columns)

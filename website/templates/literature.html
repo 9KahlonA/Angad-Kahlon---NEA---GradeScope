@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>English Literature - Year Groups</title>
   <style>
+    /* General styling for the body to set font, background, and layout */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -17,6 +18,7 @@
       height: 100vh;
     }
 
+    /* Styling for the container holding the table */
     .container {
       background: #2b2f2b;
       padding: 30px;
@@ -27,40 +29,48 @@
       max-width: 500px;
     }
 
+    /* Styling for the header */
     h1 {
       font-size: 2.5rem; /* Ensure consistent font size */
       margin-bottom: 10px;
     }
 
+    /* Styling for the table */
     table {
       width: 100%;
       border-collapse: collapse;
       margin: 20px 0;
     }
 
+    /* Styling for table borders */
     table, th, td {
       border: 1px solid #ddd;
     }
 
+    /* Styling for table cells */
     th, td {
       padding: 10px;
       text-align: left;
     }
 
+    /* Styling for table headers */
     th {
       background-color: #4d7253;
       color: white;
     }
 
+    /* Hover effect for table rows */
     tr:hover {
       background-color: #3d5c44;
     }
 
+    /* Styling for links */
     a {
       color: #f0f0f0;
       text-decoration: none;
     }
 
+    /* Hover effect for links */
     a:hover {
       text-decoration: underline;
     }
@@ -69,6 +79,7 @@
 <body>
   <div class="container">
     <h1>English Literature - Year Groups</h1>
+    <!-- Table showing year groups -->
     <table>
       <thead>
         <tr>
@@ -76,9 +87,15 @@
         </tr>
       </thead>
       <tbody>
+        <!-- Loop through year groups and display each as a row -->
         {% for year_group in year_groups %}
         <tr>
-          <td><a href="{{ url_for('views.literature_classes', year_group_id=year_group.yeargroup_id) }}">{{ year_group.year }}</a></td>
+          <td>
+            <!-- Link to view classes for the selected year group -->
+            <a href="{{ url_for('views.literature_classes', year_group_id=year_group.yeargroup_id) }}">
+              {{ year_group.year }}
+            </a>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
