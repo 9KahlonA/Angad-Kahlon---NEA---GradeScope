@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Login Page</title>
   <style>
-    /* General styling for the body to set font, background, and layout */
+    /* General styling for the body */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -29,14 +29,14 @@
       box-sizing: border-box;
     }
 
-    /* Styling for the header */
+    /* Header styling */
     .login-container h1 {
       margin-bottom: 30px;
       font-size: 2rem;
       color: #d2f5d2;
     }
 
-    /* Styling for input fields */
+    /* Input field styling */
     .login-container input {
       width: 100%;
       padding: 12px 15px;
@@ -49,7 +49,6 @@
       color: #ffffff;
     }
 
-    /* Placeholder text styling */
     .login-container input::placeholder {
       color: #a5bba5;
     }
@@ -69,12 +68,11 @@
       margin-top: 20px;
     }
 
-    /* Hover effect for the button */
     .login-container button:hover {
       background-color: #3d5c44;
     }
 
-    /* Loading overlay styles */
+    /* Loading overlay styling */
     .loading-overlay {
       display: none;
       position: fixed;
@@ -88,7 +86,6 @@
       align-items: center;
     }
 
-    /* Active state for loading overlay */
     .loading-overlay.active {
       display: flex;
     }
@@ -103,7 +100,6 @@
       animation: spin 1s linear infinite;
     }
 
-    /* Keyframes for spinner animation */
     @keyframes spin {
       from {
         transform: rotate(0deg);

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ class_name }} - Students</title>
     <style>
+        /* General body styling */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -14,11 +15,13 @@
             color: #f0f0f0;
         }
 
+        /* Header styling */
         h1 {
             text-align: center;
             margin-bottom: 20px;
         }
 
+        /* Table styling */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -27,6 +30,7 @@
             color: #f0f0f0;
         }
 
+        /* Table cell and header styling */
         th,
         td {
             padding: 10px;
@@ -34,15 +38,18 @@
             border: 1px solid #ddd;
         }
 
+        /* Header row background color */
         th {
             background-color: #4d7253;
         }
 
+        /* Alternate row background color */
         tr:nth-child(even) {
             background-color: #3a4e3a;
         }
 
         /*
+        Uncomment the following styles if you want links in the table to have specific styles
         table a {
             color: #ffffff !important;
             text-decoration: none !important;
@@ -56,12 +63,15 @@
 </head>
 
 <body>
+    <!-- Page header -->
     <h1>Class: {{ class_name }}</h1>
     <table>
         <thead>
             <tr>
+                <!-- Table header for student name -->
                 <th>Student Name</th>
                 {% for column in terms_columns %}
+                <!-- Dynamic table headers based on terms_columns -->
                 <th>{{ column }}</th>
                 {% endfor %}
             </tr>
@@ -69,8 +79,10 @@
         <tbody>
             {% for student in students %}
             <tr>
+                <!-- Student name with a placeholder link -->
                 <td><a href="#">{{ student.name }}</a></td>
                 {% for column in terms_columns %}
+                <!-- Dynamic table data for each student -->
                 <td>{{ student[column] }}</td>
                 {% endfor %}
             </tr>

@@ -4,80 +4,79 @@
   <meta charset="UTF-8">
   <title>Dashboard</title>
   <style>
-    /* General styling for the body to set font, background, and layout */
+    /* General styling for the body */
     body {
-      font-family: Arial, sans-serif; /* Sets the font for the entire page */
-      margin: 0; /* Removes default margin */
-      padding: 0; /* Removes default padding */
-      background: linear-gradient(to right, #1f2d1f, #3a4e3a); /* Adds a gradient background */
-      color: #f0f0f0; /* Sets the text color */
-      display: flex; /* Enables flexbox layout */
-      flex-direction: column; /* Aligns items vertically */
-      align-items: center; /* Centers items horizontally */
-      justify-content: center; /* Centers items vertically */
-      height: 100vh; /* Sets the height to fill the viewport */
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #1f2d1f, #3a4e3a);
+      color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
     }
 
     /* Styling for the container holding the dashboard content */
     .container {
-      background: #2b2f2b; /* Sets the background color */
-      padding: 30px; /* Adds padding inside the container */
-      border-radius: 10px; /* Rounds the corners */
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Adds a shadow effect */
-      text-align: center; /* Centers the text */
-      width: 100%; /* Makes the container responsive */
-      max-width: 500px; /* Sets a maximum width */
+      background: #2b2f2b;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      width: 100%;
+      max-width: 500px;
     }
 
-    /* Styling for the header */
+    /* Header and paragraph styling */
     h1 {
-      font-size: 2.5rem; /* Sets the font size */
-      margin-bottom: 10px; /* Adds space below the header */
+      font-size: 2.5rem;
+      margin-bottom: 10px;
     }
 
-    /* Styling for the paragraph */
     p {
-      font-size: 1.2rem; /* Sets the font size */
-      margin-bottom: 30px; /* Adds space below the paragraph */
+      font-size: 1.2rem;
+      margin-bottom: 30px;
     }
 
-    /* Styling for the button container */
+    /* Button container layout */
     .button-container {
-      display: flex; /* Enables flexbox layout */
-      gap: 20px; /* Adds space between buttons */
-      justify-content: center; /* Centers the buttons */
+      display: flex;
+      gap: 20px;
+      justify-content: center;
     }
 
     /* Styling for buttons */
     .button {
-      display: flex; /* Enables flexbox layout */
-      flex-direction: column; /* Aligns items vertically */
-      align-items: center; /* Centers items horizontally */
-      justify-content: center; /* Centers items vertically */
-      width: 150px; /* Sets the width of the button */
-      height: 150px; /* Sets the height of the button */
-      background-color: #4d7253; /* Sets the background color */
-      border: none; /* Removes the border */
-      border-radius: 10px; /* Rounds the corners */
-      color: #fff; /* Sets the text color */
-      font-size: 1rem; /* Sets the font size */
-      font-weight: bold; /* Makes the text bold */
-      cursor: pointer; /* Changes the cursor to a pointer */
-      transition: transform 0.3s ease, background-color 0.3s ease; /* Adds a smooth transition effect */
-      text-decoration: none; /* Removes underline from links */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 150px;
+      height: 150px;
+      background-color: #4d7253;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+      text-decoration: none;
     }
 
-    /* Styling for button images */
+    /* Button image styling */
     .button img {
-      width: 50px; /* Sets the width of the image */
-      height: 50px; /* Sets the height of the image */
-      margin-bottom: 10px; /* Adds space below the image */
+      width: 50px;
+      height: 50px;
+      margin-bottom: 10px;
     }
 
     /* Hover effect for buttons */
     .button:hover {
-      background-color: #3d5c44; /* Changes the background color on hover */
-      transform: scale(1.1); /* Enlarges the button slightly */
+      background-color: #3d5c44;
+      transform: scale(1.1);
     }
   </style>
 </head>

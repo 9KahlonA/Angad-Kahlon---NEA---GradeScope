@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <title>Edit Student Details</title>
   <style>
-    /* General styling for the body to set font, background, and layout */
+    /* General styling for the body */
     body {
-      /* Setting up the font and background for a clean look */
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
@@ -21,7 +20,6 @@
 
     /* Styling for the container holding the form */
     .container {
-      /* Adding padding and shadow for a card-like appearance */
       background: #2b2f2b;
       padding: 20px;
       border-radius: 10px;
@@ -32,14 +30,13 @@
       margin-top: 20px;
     }
 
-    /* Styling for the header */
+    /* Header styling */
     h1 {
-      /* Making the header stand out */
       font-size: 2rem;
       margin-bottom: 10px;
     }
 
-    /* Styling for the form layout */
+    /* Form layout styling */
     form {
       /* Aligning form elements vertically */
       display: flex;
@@ -47,18 +44,16 @@
       align-items: center;
     }
 
-    /* Styling for labels */
+    /* Label styling */
     label {
-      /* Ensuring labels are aligned with inputs */
       margin-top: 10px;
       width: 100%;
       max-width: 400px;
       text-align: left;
     }
 
-    /* Styling for input fields */
+    /* Input field styling */
     input[type="text"], input[type="number"] {
-      /* Making inputs user-friendly */
       width: 100%;
       max-width: 400px;
       padding: 8px;
@@ -67,9 +62,8 @@
       border-radius: 5px;
     }
 
-    /* Styling for the submit button */
+    /* Submit button styling */
     button {
-      /* Adding a nice button style */
       margin-top: 20px;
       padding: 10px;
       background-color: #4d7253;
@@ -77,19 +71,35 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      font-size: 1rem; /* Font size for the Save Changes button */
     }
 
     /* Hover effect for the button */
     button:hover {
-      /* Slight color change on hover */
       background-color: #3d5c44;
     }
 
-    /* Styling for success message */
+    /* Success message styling */
     .success {
       /* Highlighting success messages */
       color: #4caf50;
       margin-top: 10px;
+    }
+
+    /* Styling for the back button */
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 15px;
+      background-color: #4d7253;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background-color: #3d5c44;
     }
   </style>
 </head>
@@ -101,7 +111,7 @@
     <p class="success">Student details updated successfully!</p>
     {% endif %}
     <!-- Form for editing student details -->
-    <form method="POST"> <!-- Ensure the method is POST -->
+    <form method="POST">
       <!-- Input for first name -->
       <label for="first_name">First Name:</label>
       <input type="text" id="first_name" name="first_name" value="{{ student.first_name }}" required>
@@ -125,6 +135,10 @@
       <!-- Submit button -->
       <button type="submit">Save Changes</button>
     </form>
+    <!-- Button to redirect back to the class students page -->
+    <a href="{{ url_for('views.literature_class_students' if subject == 'Literature' else 'views.language_class_students', class_id=class_id) }}" class="button" style="font-size: 1rem;">
+      Back to Students
+    </a>
   </div>
 </body>
 </html>
