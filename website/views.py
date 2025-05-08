@@ -53,7 +53,7 @@ def student_details(student_id):
     terms_columns = [term.term_name for term in Terms.query.order_by(Terms.term_id.asc()).limit(4).all()]  # Fetch term_name values to use as column names
     return render_template('student_details.html', student=student, class_info=class_info, year_group=year_group, terms_columns=terms_columns, class_id=student.class_id, subject=determine_subject(student.class_id))  # Pass class_id and subject to the template
 
-def determine_subject(class_id):  # Helper function to determine the subject based on the class ID
+def determine_subject(class_id):  # Helper function to determine the subject based on the class Id
     # Logic to determine the subject (e.g., based on class name or related data)
     class_info = Class.query.filter_by(class_id=class_id).first()
     if "Literature" in class_info.class_code:  # Example logic based on class name

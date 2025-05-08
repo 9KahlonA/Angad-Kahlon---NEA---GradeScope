@@ -69,14 +69,14 @@
 </head>
 <body>
   <div class="container">
-    <!-- Display the subject name dynamically in the header -->
+    <!-- Display the subject name automatically in the header -->
     <h1>{{ subject }} - Class Students</h1>
     <!-- Table displaying students and their grades -->
     <table>
       <thead>
         <tr>
           <th>Student Name</th>
-          <!-- Loop through terms_columns to dynamically generate table headers -->
+          <!-- Loop through terms_columns to automatically generate table headers -->
           {% for column in terms_columns %}
           <th>{{ column }}</th>
           {% endfor %}
