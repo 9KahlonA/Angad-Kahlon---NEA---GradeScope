@@ -59,36 +59,60 @@
             text-decoration: underline !important;
         }
         */
+
+        /* Layout styling */
+        .page-wrapper {
+            display: flex;
+            flex-direction: row;
+            min-height: 100vh;
+            width: 100vw;
+        }
+
+        .container {
+            background: #2b2f2b;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
     </style>
 </head>
 
 <body>
-    <!-- Page header -->
-    <h1>Class: {{ class_name }}</h1>
-    <table>
-        <thead>
-            <tr>
-                <!-- Table header for student name -->
-                <th>Student Name</th>
-                {% for column in terms_columns %}
-                <!-- Dynamic table headers based on terms_columns -->
-                <th>{{ column }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for student in students %}
-            <tr>
-                <!-- Student name with a placeholder link -->
-                <td><a href="#">{{ student.name }}</a></td>
-                {% for column in terms_columns %}
-                <!-- Dynamic table data for each student -->
-                <td>{{ student[column] }}</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="page-wrapper">
+        {% include 'navbar.html' %}
+        <div class="container">
+            <!-- Page header -->
+            <h1>Class: {{ class_name }}</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <!-- Table header for student name -->
+                        <th>Student Name</th>
+                        {% for column in terms_columns %}
+                        <!-- Dynamic table headers based on terms_columns -->
+                        <th>{{ column }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <!-- Student name with a placeholder link -->
+                        <td><a href="#">{{ student.name }}</a></td>
+                        {% for column in terms_columns %}
+                        <!-- Dynamic table data for each student -->
+                        <td>{{ student[column] }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 
 </html>

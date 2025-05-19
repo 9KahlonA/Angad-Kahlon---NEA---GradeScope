@@ -11,11 +11,8 @@
       padding: 0;
       background: linear-gradient(to right, #1f2d1f, #3a4e3a);
       color: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      display: block;
+      /* Remove flex and align-items/justify-content from body */
     }
 
     /* Styling for the container that holds the table */
@@ -27,6 +24,13 @@
       text-align: center;
       width: 100%;
       max-width: 500px;
+      margin: 40px auto 0 auto;
+      /* Remove height, flex, or min-height if present */
+      display: block;
+      position: relative;
+      top: 0;
+      left: 0;
+      /* Ensure box only wraps content */
     }
 
     /* Header styling */
@@ -71,9 +75,17 @@
     a:hover {
       text-decoration: underline;
     }
+
+    .page-wrapper {
+      display: flex;
+      flex-direction: row;
+      min-height: 100vh;
+      width: 100vw;
+    }
   </style>
 </head>
 <body>
+  {% include 'navbar.html' %}
   <div class="container">
     <h1>English Language - Year Groups</h1>
     <!-- Table showing year groups -->

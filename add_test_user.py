@@ -1,5 +1,5 @@
-from website import create_app, db
-from website.models import User
+from website import create_app, db 
+from website.models import User # Import the User model from models.py
 
 app = create_app()
 

@@ -8,7 +8,7 @@ class User(db.Model): # Defines the user to model from data pulled from the data
     password_hash = db.Column(db.String(150), nullable=False) # Makes sure the passwordm which is hashed, is max 150 characters long and not null
 
     def set_password(self, password): # 
-        self.password_hash = generate_password_hash(password) # Hashes the Password using the MD5 algorithm provided in the werkzeug.security module
+        self.password_hash = generate_password_hash(password) # Hashes the Password using PBKDF2 and the SHA256 algorithm provided in the werkzeug.security module
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password) # Checks the password against the hashed passwords in the db

@@ -19,6 +19,14 @@
       overflow-x: hidden; /* Prevent horizontal scrolling */
     }
 
+    /* Styling for the page wrapper to enable side-by-side layout with navbar */
+    .page-wrapper {
+      display: flex;
+      flex-direction: row;
+      min-height: 100vh;
+      width: 100vw;
+    }
+
     /* Styling for the container holding the table */
     .container {
       background: #2b2f2b;
@@ -29,6 +37,8 @@
       width: 90%; /* Adjust width to fit within the window */
       max-width: 800px;
       margin-top: 20px; /* Add spacing from the top */
+      margin-left: auto;
+      margin-right: auto;
     }
 
     /* Styling for the header */
@@ -68,38 +78,41 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Display the subject name automatically in the header -->
-    <h1>{{ subject }} - Class Students</h1>
-    <!-- Table displaying students and their grades -->
-    <table>
-      <thead>
-        <tr>
-          <th>Student Name</th>
-          <!-- Loop through terms_columns to automatically generate table headers -->
-          {% for column in terms_columns %}
-          <th>{{ column }}</th>
+  <div class="page-wrapper">
+    {% include 'navbar.html' %}
+    <div class="container">
+      <!-- Display the subject name automatically in the header -->
+      <h1>{{ subject }} - Class Students</h1>
+      <!-- Table displaying students and their grades -->
+      <table>
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <!-- Loop through terms_columns to automatically generate table headers -->
+            {% for column in terms_columns %}
+            <th>{{ column }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Loop through the list of students -->
+          {% for student in students %}
+          <tr>
+            <td>
+              <!-- Generate a link to view details of the selected student -->
+              <a href="{{ url_for('views.student_details', student_id=student.student_id) }}">
+                {{ student.first_name }} {{ student.last_name }}
+              </a>
+            </td>
+            <!-- Loop through terms_columns to display grades for each student -->
+            {% for column in terms_columns %}
+            <td>{{ student_grades[student.student_id][column] }}</td>
+            {% endfor %}
+          </tr>
           {% endfor %}
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Loop through the list of students -->
-        {% for student in students %}
-        <tr>
-          <td>
-            <!-- Generate a link to view details of the selected student -->
-            <a href="{{ url_for('views.student_details', student_id=student.student_id) }}">
-              {{ student.first_name }} {{ student.last_name }}
-            </a>
-          </td>
-          <!-- Loop through terms_columns to display grades for each student -->
-          {% for column in terms_columns %}
-          <td>{{ student_grades[student.student_id][column] }}</td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   </div>
 </body>
 </html>
