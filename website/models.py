@@ -14,50 +14,40 @@ class User(db.Model): # Defines the user to model from data pulled from the data
         return check_password_hash(self.password_hash, password) # Checks the password against the hashed passwords in the db
 
 class YearGroup(db.Model):
-    __tablename__ = 'yeargroups'  # Defines the table name 
-    __table_args__ = {'schema': 'gradescope'}  # Specify the schema
-    yeargroup_id = db.Column(db.Integer, primary_key=True) # sets the yeargroup_id as the primary key
-    year = db.Column(db.String(50), nullable=False) # Year is set to a string, max 50 characters long and not null
+    __tablename__ = 'yeargroups'  # Correct table name
+    yeargroup_id = db.Column(db.Integer, primary_key=True)  # Correct primary key
+    year = db.Column(db.String(50), nullable=False)
 
 class Class(db.Model):
-    __tablename__ = 'classes' # Defines the table name
-    class_id = db.Column(db.Integer, primary_key=True)  #sets the class_id as the primary key
-    class_code = db.Column(db.String(50), nullable=False)  # sets the class_code to a string, max 50 characters long and not null
-    yeargroup_id = db.Column(db.Integer, db.ForeignKey('gradescope.yeargroups.yeargroup_id'), nullable=False)  # foreign key to link to yeargroups table
+    __tablename__ = 'classes'  # Correct table name
+    class_id = db.Column(db.Integer, primary_key=True)  # Correct primary key
+    class_code = db.Column(db.String(50), nullable=False)
+    yeargroup_id = db.Column(db.Integer, db.ForeignKey('yeargroups.yeargroup_id'), nullable=False)  # Correct foreign key
 
 class Subject(db.Model):
-    __tablename__ = 'subjects'  # Defines the table name
-    id = db.Column(db.Integer, primary_key=True) # sets the id as the primary key and integer
-    name = db.Column(db.String(100), nullable=False) # sets the name to a string, max 100 characters long and not null
+    __tablename__ = 'subjects'  # Correct table name
+    subject_id = db.Column(db.Integer, primary_key=True)  # Correct primary key
+    subject_name = db.Column(db.String(100), nullable=False)  # Correct column name
 
 class Terms(db.Model):
-    __tablename__ = 'terms' # Defines the table name
-    term_id = db.Column(db.Integer, primary_key=True) # sets the term_id as the primary key and integer
-    term_name = db.Column(db.String(100), nullable=False) # sets the term_name to a string, max 100 characters long and not null
-
-    def __repr__(self):
-        return f"<Terms(term_id={self.term_id}, term_name='{self.term_name}')>"
+    __tablename__ = 'terms'  # Correct table name
+    term_id = db.Column(db.Integer, primary_key=True)  # Correct primary key
+    term_name = db.Column(db.String(100), nullable=False)  # Correct column name
 
 class Grades(db.Model):
-    __tablename__ = 'grades' # Defines the table name
-    __table_args__ = {'extend_existing': True}  # allows for the table to be extended if it already exists
-
-    grade_id = db.Column(db.Integer, primary_key=True) # sets the grade_id as the primary key and integer
-    student_id = db.Column(db.Integer, db.ForeignKey('student.student_id'), nullable=False) # Foreign key to link to student table
-    subject_id = db.Column(db.Integer, nullable=False)  # Foreign key to link to subject table     
-    term_id = db.Column(db.Integer, db.ForeignKey('terms.term_id'), nullable=False) # Foreign key to link to terms table
-    grade = db.Column(db.String(10), nullable=False)  # sets the grade to a string, max 10 characters long and not null
-
-    def __repr__(self):
-        return f"<Grades(grade_id={self.grade_id}, student_id={self.student_id}, subject_id={self.subject_id}, term_id={self.term_id}, grade='{self.grade}')>"
-    # Provides a string representation of the grades table to use in debugginng as i ran inot some errors.
+    __tablename__ = 'grades'  # Correct table name
+    grade_id = db.Column(db.Integer, primary_key=True)  # Correct primary key
+    student_id = db.Column(db.Integer, db.ForeignKey('students.student_id'), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subjects.subject_id'), nullable=False)  # Correct foreign key
+    term_id = db.Column(db.Integer, db.ForeignKey('terms.term_id'), nullable=False)  # Corrected foreign key
+    grade = db.Column(db.String(10), nullable=False)
 
 class Student(db.Model):
-    __tablename__ = 'students' # Defines the table name
-    student_id = db.Column(db.Integer, primary_key=True)  # sets the student_id as the primary key and integer
-    first_name = db.Column(db.String(50), nullable=False) # sets the first_name to a string, max 50 characters long and not null
-    last_name = db.Column(db.String(50), nullable=False) # sets the last_name to a string, max 50 characters long and not null
-    ethnicity = db.Column(db.String(50), nullable=True)  # sets the ethnicity to a string, max 50 characters long and not null
-    home_language = db.Column(db.String(50), nullable=True)  # sets the home_language to a string, max 50 characters long and not null
-    reading_age = db.Column(db.Float, nullable=True)  # sets the reading_age to a float, max 50 characters long and not null
-    class_id = db.Column(db.Integer, db.ForeignKey('classes.class_id'), nullable=False) # Foreign key to link to classes table
+    __tablename__ = 'students'  # Correct table name
+    student_id = db.Column(db.Integer, primary_key=True)  # Correct primary key
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    ethnicity = db.Column(db.String(50), nullable=True)
+    home_language = db.Column(db.String(50), nullable=True)
+    reading_age = db.Column(db.Float, nullable=True)
+    class_id = db.Column(db.Integer, db.ForeignKey('classes.class_id'), nullable=False)  # Correct foreign key

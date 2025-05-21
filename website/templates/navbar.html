@@ -1,96 +1,169 @@
-<nav class="sidebar-navbar">
-  <div class="sidebar-title">Gradescope</div>
-  <ul class="sidebar-links">
-    <li><a href="{{ url_for('views.language') }}">Language</a></li>
-    <li><a href="{{ url_for('views.literature') }}">Literature</a></li>
-    <!-- Add more links as needed -->
-  </ul>
+<nav class="top-navbar">
+  <a href="{{ url_for('auth.dashboard') }}" class="navbar-title">Gradescope</a>
+  <div class="profile-menu">
+    <img src="{{ url_for('static', filename='assets/images/profile_icon.png') }}" alt="Profile" class="profile-icon">
+    <div class="dropdown">
+      <button id="logout-button">Logout</button>
+    </div>
+  </div>
+  <div class="navbar-right">
+    <img src="{{ url_for('static', filename='assets/logout-icon.png') }}" alt="Logout" class="logout-icon">
+  </div>
 </nav>
 <style>
-.sidebar-navbar {
+.top-navbar {
   position: fixed;
   top: 0;
   left: 0;
-  width: 210px;
-  height: 100vh;
-  background: #2b2f2b;
+  width: 100%;
+  height: 60px;
+  background: #2b2f2b; /* Updated background color */
   color: #f0f0f0;
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding-top: 0;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.18);
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
   z-index: 100;
-  border-right: 1px solid #222;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-.sidebar-title {
-  font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 2rem;
-  font-weight: bold;
-  letter-spacing: 1px;
+.navbar-title {
+  text-decoration: none;
   color: #4fd1c5;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
   text-shadow: 1px 1px 2px #222;
-  padding: 32px 0 24px 0;
-  text-align: center;
-  border-bottom: 1px solid #222;
-  margin-bottom: 0;
 }
-.sidebar-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  flex: 1;
+.profile-menu {
+  position: absolute;
+  right: 20px;
+  top: 10px;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  align-items: flex-end;
 }
-.sidebar-links li {
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.profile-icon:hover {
+  transform: scale(1.1);
+}
+
+.dropdown {
+  display: none;
+  margin-top: 5px;
+  background: #2b2f2b;
+  border-radius: 5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.dropdown button {
+  background: #4d7253;
+  color: white;
+  border: none;
+  padding: 10px 15px;
   width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s ease;
 }
-.sidebar-links a {
+
+.dropdown button:hover {
+  background: #3d5c44;
+}
+
+.profile-menu:hover .dropdown {
   display: block;
+  animation: dropdown-expand 0.3s ease;
+}
+
+@keyframes dropdown-expand {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+/* Loading overlay styling */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  padding: 18px 32px;
-  color: #f0f0f0;
-  text-decoration: none;
-  font-size: 1.1rem;
-  transition: background 0.2s, color 0.2s;
-  box-sizing: border-box;
-  border-bottom: 1px solid #222;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
 }
-.sidebar-links a:hover {
-  background: #3a4e3a;
-  color: #4fd1c5;
+
+.loading-overlay.active {
+  display: flex;
 }
-@media (max-width: 600px) {
-  .sidebar-navbar {
-    width: 100vw;
-    height: auto;
-    flex-direction: row;
-    align-items: center;
-    padding-top: 0;
-    position: static;
-    border-right: none;
-    border-bottom: 1px solid #222;
+
+/* Spinner animation for loading */
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
   }
-  .sidebar-title {
-    margin: 0 1rem 0 1rem;
-    border-bottom: none;
-    padding: 16px 0;
+  to {
+    transform: rotate(360deg);
   }
-  .sidebar-links {
-    display: flex;
-    flex-direction: row;
-    width: auto;
-  }
-  .sidebar-links a {
-    padding: 0.5rem 1rem;
-    border-bottom: none;
-    border-right: 1px solid #222;
-  }
-  .sidebar-links a:last-child {
-    border-right: none;
-  }
+}
+
+.navbar-right {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.logout-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  margin-left: 15px;
+  transition: transform 0.3s ease;
+}
+
+.logout-icon:hover {
+  transform: scale(1.1);
 }
 </style>
+<script>
+document.getElementById('logout-button').addEventListener('click', function () {
+  const loadingOverlay = document.createElement('div');
+  loadingOverlay.className = 'loading-overlay active';
+  loadingOverlay.innerHTML = '<div class="spinner"></div>';
+  document.body.appendChild(loadingOverlay);
+
+  setTimeout(() => {
+    window.location.href = "{{ url_for('auth.login') }}";
+  }, 1000);
+});
+</script>
+<div class="loading-overlay">
+  <div class="spinner"></div>
+</div>
