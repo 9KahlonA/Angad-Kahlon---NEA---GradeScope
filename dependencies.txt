@@ -1,0 +1,24 @@
+# GradeScope System Dependencies
+# Install with: pip install -r dependencies.txt
+
+# Web Framework
+Flask==2.3.3
+Flask-SQLAlchemy==3.0.5
+
+# Database
+PyMySQL==1.1.0
+SQLAlchemy==2.0.21
+
+# Security
+Werkzeug==2.3.7
+
+# Data Processing & Analysis
+pandas==2.1.1
+numpy==1.24.3
+
+# Data Visualization
+matplotlib==3.7.2
+
+# Additional utilities
+html5lib==1.1
+
