@@ -3,90 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>Student Projections</title>
-  <style>
-    /* Basic dark theme styling for display */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to right, #1f2d1f, #3a4e3a);
-      color: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-    }
-
-    .container {
-      background: #2b2f2b;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-      text-align: center;
-      width: 90%;
-      max-width: 700px;
-      margin-top: 100px; /* Adjust to avoid overlap with navbar */
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 30px;
-    }
-
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: left;
-    }
-
-    th {
-      background-color: #4d7253;
-      color: white;
-    }
-
-    tr:hover {
-      background-color: #3d5c44;
-    }
-
-    img {
-      max-width: 100%;
-      margin-top: 20px;
-      border-radius: 5px;
-    }
-
-    /* Ensure navbar elements are aligned properly */
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
-      background-color: #2b2f2b;
-      color: #f0f0f0;
-    }
-
-    .navbar-right {
-      display: flex;
-      align-items: center;
-    }
-
-    .logout-icon {
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-      margin-left: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/student_projections.css') }}">
 </head>
 <body>
   {% include 'navbar.html' %}
   <div class="container">
-    <!-- Header with student info -->
+    <div style="text-align: center; margin-bottom: 20px;">
+      <button onclick="downloadPDF()" 
+              style="background-color: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+        📄 Download PDF Report
+      </button>
+    </div>
+    
     <h1>Projections for {{ student.first_name }} {{ student.last_name }}</h1>
     <h3>Class: {{ class_code }}</h3>
 
-    <!-- Table per subject showing grade year by year -->
     {% for subject, year_data in projections.items() %}
       <h2>{{ subject }}</h2>
       <table>
@@ -107,16 +38,26 @@
       </table>
     {% endfor %}
 
-    <!-- Final predicted grade summary -->
-    <h2>🎯 Final Predicted Grades (Year 11)</h2>
-    <ul>
-      {% for subject, grade in final_prediction.items() %}
-        <li><strong>{{ subject }}:</strong> {{ grade }}</li>
-      {% endfor %}
-    </ul>
+    <h2>Final GCSE Predicted Grades</h2>
+    {% for subject, grade in final_prediction.items() %}
+      <p><strong>{{ subject }}:</strong> {{ grade }}</p>
+    {% endfor %}
 
-    <!-- Projection graph -->
     <img src="{{ url_for('static', filename='assets/graph.png') }}" alt="Projection Graph">
   </div>
+
+  <script>
+    function downloadPDF() {
+      const downloadBtn = document.querySelector('button[onclick="downloadPDF()"]');
+      downloadBtn.style.display = 'none';
+      
+      window.print();
+      
+      setTimeout(() => {
+        downloadBtn.style.display = 'inline-block';
+      }, 1000);
+    }
+    
+  </script>
 </body>
 </html>

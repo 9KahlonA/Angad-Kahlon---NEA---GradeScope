@@ -14,7 +14,6 @@ def inspect_mysql_schema(host, port, user, password, database):
 
         print(f"\n📦 Database: `{database}`")
 
-        # 1. Get all tables
         cursor.execute("SHOW TABLES;")
         tables = [row[0] for row in cursor.fetchall()]
 
@@ -23,14 +22,12 @@ def inspect_mysql_schema(host, port, user, password, database):
         for table in tables:
             print(f"\n🗂️ Table: `{table}`")
 
-            # 2. Columns
             cursor.execute(f"DESCRIBE `{table}`;")
             columns = cursor.fetchall()
             print("🔹 Columns:")
             for col in columns:
                 print(f"   - {col[0]} ({col[1]}) {'[PK]' if col[3] == 'PRI' else ''}")
 
-            # 3. Foreign Keys
             cursor.execute(f"""
                 SELECT
                     column_name,
@@ -46,14 +43,12 @@ def inspect_mysql_schema(host, port, user, password, database):
                 for fk in fks:
                     print(f"   - {fk[0]} ➜ {fk[1]}.{fk[2]}")
 
-            # 4. Preview rows
             cursor.execute(f"SELECT * FROM `{table}` LIMIT 5;")
             rows = cursor.fetchall()
             print(f"🔍 Sample data ({len(rows)} rows):")
             for r in rows:
                 print(f"   {r}")
 
-            # Store everything
             schema_info[table] = {
                 "columns": columns,
                 "foreign_keys": fks,
@@ -65,7 +60,6 @@ def inspect_mysql_schema(host, port, user, password, database):
     finally:
         conn.close()
 
-# === CALL THIS FUNCTION ===
 schema_data = inspect_mysql_schema(
     host='127.0.0.1',
     port=3306,

@@ -2,7 +2,7 @@
 from ..models import Student, Class, Grades, Terms, Subject
 
 # Import the predictive model structure
-from ..Algorithms.Predition_Model import Student as PredictStudent, GradePredictor
+from ..Algorithms.Prediction_Model import Student as PredictStudent, GradePredictor
 
 import matplotlib
 matplotlib.use('Agg')  # Use Agg backend for non-GUI environments
@@ -24,7 +24,10 @@ def fetch_student_for_prediction(student_id, db):
         reading_age=student_obj.reading_age or 11.0,  # Default reading age if null
         is_efl=1 if student_obj.home_language.lower() != "english" else 0,  # Mark as EFL if not English
         ethnicity=student_obj.ethnicity or "Unknown",
-        current_year=year_group
+        current_year=year_group,
+        first_name=student_obj.first_name,
+        last_name=student_obj.last_name,
+        class_code=class_obj.class_code
     )
 
     subjects = Subject.query.all()  # Fetch all available subjects
@@ -36,7 +39,8 @@ def fetch_student_for_prediction(student_id, db):
         for term in terms:
             g = Grades.query.filter_by(student_id=student_id, subject_id=subj.subject_id, term_id=term.term_id).first()  # Corrected subject_id
             if g and str(g.grade).isdigit():  # Only process numeric grades
-                grades[f"Year {year_group}"] = float(g.grade)
+                # Use term name as key to avoid overwriting
+                grades[term.term_name] = float(g.grade)
         if grades:
             pred_student.add_grades(subj.subject_name, grades)  # Corrected subject_name
 

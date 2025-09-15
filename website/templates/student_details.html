@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Edit Student Details</title>
   <style>
-    /* General styling for the body */
+    
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -18,7 +18,7 @@
       min-height: 100vh;
     }
 
-    /* Styling for the container holding the form */
+    
     .container {
       background: #2b2f2b;
       padding: 20px;
@@ -32,21 +32,21 @@
       margin-right: auto;
     }
 
-    /* Header styling */
+    
     h1 {
       font-size: 2rem;
       margin-bottom: 10px;
     }
 
-    /* Form layout styling */
+    
     form {
-      /* Aligning form elements vertically */
+      
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    /* Label styling */
+    
     label {
       margin-top: 10px;
       width: 100%;
@@ -54,7 +54,7 @@
       text-align: left;
     }
 
-    /* Input field styling */
+    
     input[type="text"], input[type="number"] {
       width: 100%;
       max-width: 400px;
@@ -64,7 +64,7 @@
       border-radius: 5px;
     }
 
-    /* Submit button styling */
+    
     button {
       margin-top: 20px;
       padding: 10px;
@@ -73,36 +73,21 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 1rem; /* Font size for the Save Changes button */
+      font-size: 1rem; 
     }
 
-    /* Hover effect for the button */
+    
     button:hover {
       background-color: #3d5c44;
     }
 
-    /* Success message styling */
+    
     .success {
-      /* Highlighting success messages */
+      
       color: #4caf50;
       margin-top: 10px;
     }
 
-    /* Styling for the back button */
-    .button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 15px;
-      background-color: #4d7253;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .button:hover {
-      background-color: #3d5c44;
-    }
 
     .page-wrapper {
       display: flex;
@@ -116,39 +101,35 @@
   {% include 'navbar.html' %}
   <div class="container" style="margin-top: 80px;">
     <h1>Edit Student Details</h1>
-    <!-- Display success message if the update was successful -->
+    
     {% if success %}
     <p class="success">Student details updated successfully!</p>
     {% endif %}
-    <!-- Form for editing student details -->
+    
     <form method="POST">
-      <!-- Input for first name -->
+      
       <label for="first_name">First Name:</label>
       <input type="text" id="first_name" name="first_name" value="{{ student.first_name }}" required>
 
-      <!-- Input for last name -->
+      
       <label for="last_name">Last Name:</label>
       <input type="text" id="last_name" name="last_name" value="{{ student.last_name }}" required>
 
-      <!-- Input for ethnicity -->
+      
       <label for="ethnicity">Ethnicity:</label>
       <input type="text" id="ethnicity" name="ethnicity" value="{{ student.ethnicity }}">
 
-      <!-- Input for home language -->
+      
       <label for="home_language">Home Language:</label>
       <input type="text" id="home_language" name="home_language" value="{{ student.home_language }}">
 
-      <!-- Input for reading age -->
+      
       <label for="reading_age">Reading Age:</label>
       <input type="number" id="reading_age" name="reading_age" step="0.1" value="{{ student.reading_age }}">
 
-      <!-- Submit button -->
+      
       <button type="submit">Save Changes</button>
     </form>
-    <!-- Button to redirect back to the class students page -->
-    <a href="{{ url_for('views.literature_class_students' if subject == 'Literature' else 'views.language_class_students', class_id=class_id) }}" class="button" style="font-size: 1rem;">
-      Back to Students
-    </a>
   </div>
 </body>
 </html>

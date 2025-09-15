@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>English Literature - Classes</title>
   <style>
-    /* General styling for the body */
+    
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -18,7 +18,7 @@
       height: 100vh;
     }
 
-    /* Styling for the container holding the table */
+    
     .container {
       background: #2b2f2b;
       padding: 30px;
@@ -30,20 +30,20 @@
       margin: 0 auto;
     }
 
-    /* Header styling */
+    
     h1 {
       font-size: 2.5rem;
       margin-bottom: 10px;
     }
 
-    /* Table styling */
+    
     table {
       width: 100%;
       border-collapse: collapse;
       margin: 20px 0;
     }
 
-    /* Table cell and header styling */
+    
     table, th, td {
       border: 1px solid #ddd;
     }
@@ -58,12 +58,12 @@
       color: white;
     }
 
-    /* Hover effect for table rows */
+    
     tr:hover {
       background-color: #3d5c44;
     }
 
-    /* Link styling */
+    
     a {
       color: #f0f0f0;
       text-decoration: none;
@@ -85,7 +85,7 @@
   {% include 'navbar.html' %}
   <div class="container" style="margin-top: 80px;">
     <h1>Literature Classes for Year Group {{ year_group_id }}</h1>
-    <!-- Table showing classes -->
+    
     <table>
       <thead>
         <tr>
@@ -93,11 +93,11 @@
         </tr>
       </thead>
       <tbody>
-        <!-- Loop through classes and display each as a row -->
+        
         {% for class in classes %}
         <tr>
           <td>
-            <!-- Link to view students in the selected class -->
+            
             <a href="{{ url_for('views.literature_class_students', class_id=class.class_id) }}">
               {{ class.class_code }}
             </a>

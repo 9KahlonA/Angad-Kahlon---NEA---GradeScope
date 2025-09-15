@@ -1,137 +1,198 @@
-from flask import Blueprint, render_template, request  # Import necessary Flask tools
-from .models import YearGroup, Class, Student, Terms, Grades  # Import the models to use in the views
-from . import db  # Import the db object
-from .Algorithms.fetch_and_predict import fetch_student_for_prediction  # Import custom fetch logic for prediction
-from .Algorithms.Predition_Model import GradePredictor  # Import the predictor class
+from flask import Blueprint, render_template, request, url_for
+from .models import YearGroup, Class, Student, Terms, Grades
+from . import db
+from .Algorithms.fetch_and_predict import fetch_student_for_prediction
+from .Algorithms.Prediction_Model import GradePredictor
 
-views = Blueprint('views', __name__)  # Create a blueprint for the views
+views = Blueprint('views', __name__)
 
-@views.route('/language')  # Define the route for the language page
+def get_recent_terms():
+    return [term.term_name for term in Terms.query.order_by(Terms.term_id.asc()).limit(4).all()]
+
+def get_student_grades_for_subject(students, terms, subject_id):
+    student_grades = {}
+    for student in students:
+        grades = {}
+        for term in terms:
+            grade = Grades.query.filter_by(
+                student_id=student.student_id, 
+                term_id=term.term_id, 
+                subject_id=subject_id
+            ).first()
+            grades[term.term_name] = grade.grade if grade else "N/A"
+        student_grades[student.student_id] = grades
+    return student_grades
+
+def get_navigation_context(current_route, **kwargs):
+    navigation = {
+        'show_back': True,
+        'back_url': None,
+        'back_text': 'Back'
+    }
+    
+    if current_route == 'views.language' or current_route == 'views.literature':
+        navigation['back_url'] = 'auth.dashboard'
+        navigation['back_text'] = 'Dashboard'
+    elif current_route == 'views.language_classes':
+        navigation['back_url'] = 'views.language'
+        navigation['back_text'] = 'Language'
+    elif current_route == 'views.literature_classes':
+        navigation['back_url'] = 'views.literature'
+        navigation['back_text'] = 'Literature'
+    elif current_route == 'views.language_class_students':
+        class_id = kwargs.get('class_id')
+        if class_id:
+            class_obj = Class.query.get(class_id)
+            if class_obj:
+                navigation['back_url'] = 'views.language_classes'
+                navigation['back_params'] = {'year_group_id': class_obj.yeargroup_id}
+                navigation['back_text'] = 'Language Classes'
+    elif current_route == 'views.literature_class_students':
+        class_id = kwargs.get('class_id')
+        if class_id:
+            class_obj = Class.query.get(class_id)
+            if class_obj:
+                navigation['back_url'] = 'views.literature_classes'
+                navigation['back_params'] = {'year_group_id': class_obj.yeargroup_id}
+                navigation['back_text'] = 'Literature Classes'
+    elif current_route == 'views.student_details' or current_route == 'views.student_projections':
+        student_id = kwargs.get('student_id')
+        if student_id:
+            from_param = request.args.get('from')
+            referrer = request.referrer
+            print(f"DEBUG: From param: {from_param}, Referrer: {referrer}")
+            
+            if from_param == 'search' or (referrer and '/search' in referrer):
+                print(f"DEBUG: Detected search source, setting back to search")
+                navigation['back_url'] = 'auth.search_page'
+                navigation['back_text'] = 'Back to Search'
+            else:
+                print(f"DEBUG: No search source detected, using default class navigation")
+                student = Student.query.get(student_id)
+                if student:
+                    class_obj = Class.query.get(student.class_id)
+                    if class_obj:
+                        if 'Language' in class_obj.class_code:
+                            navigation['back_url'] = 'views.language_class_students'
+                            navigation['back_text'] = 'Language Class'
+                        else:
+                            navigation['back_url'] = 'views.literature_class_students'
+                            navigation['back_text'] = 'Literature Class'
+                        navigation['back_params'] = {'class_id': student.class_id}
+    elif current_route == 'auth.dashboard':
+        navigation['show_back'] = False
+    
+    return navigation
+
+@views.route('/language')
 def language():
-    year_groups = YearGroup.query.all()  # Fetch all year groups
-    return render_template('language.html', year_groups=year_groups)  # Display the language page with the year groups
+    return render_subject_page('language', 'views.language')
 
-@views.route('/literature')  # Define the route for the literature page
+@views.route('/literature')
 def literature():
-    year_groups = YearGroup.query.all()  # Fetch all year groups
-    return render_template('literature.html', year_groups=year_groups)  # Display the literature page with the year groups
+    return render_subject_page('literature', 'views.literature')
 
-@views.route('/language/<int:year_group_id>')  # Define the route for language classes with a specific year group ID
+def render_subject_page(subject, route_name):
+    year_groups = YearGroup.query.filter(YearGroup.year != 11).all()
+    navigation = get_navigation_context(route_name)
+    return render_template(f'{subject}.html', year_groups=year_groups, navigation=navigation)
+
+@views.route('/language/<int:year_group_id>')
 def language_classes(year_group_id): 
-    classes = Class.query.filter_by(yeargroup_id=year_group_id).all()  # Fetch classes for the year group
-    return render_template('language_classes.html', classes=classes, year_group_id=year_group_id)  # Display the language classes page with the classes and year group ID
+    return render_classes_page('language', year_group_id, 'views.language_classes')
 
-@views.route('/literature/<int:year_group_id>')  # Define the route for literature classes with a specific year group ID
+@views.route('/literature/<int:year_group_id>')
 def literature_classes(year_group_id):
-    classes = Class.query.filter_by(yeargroup_id=year_group_id).all()  # Fetch classes for the year group
-    return render_template('literature_classes.html', classes=classes, year_group_id=year_group_id)  # Corrected template name and variable
+    return render_classes_page('literature', year_group_id, 'views.literature_classes')
 
-@views.route('/student/<int:student_id>', methods=['GET', 'POST'])  # Define the route for student details with a specific student ID
-# The GET and POST Methods are called here to allow displaying and updates to the students table in the db
+def render_classes_page(subject, year_group_id, route_name):
+    classes = Class.query.filter_by(yeargroup_id=year_group_id).all()
+    navigation = get_navigation_context(route_name)
+    return render_template(f'{subject}_classes.html', classes=classes, year_group_id=year_group_id, navigation=navigation)
+
+@views.route('/student/<int:student_id>', methods=['GET', 'POST'])
 def student_details(student_id): 
-    student = Student.query.filter_by(student_id=student_id).first()  # Fetch the student by ID
+    student = Student.query.filter_by(student_id=student_id).first()
     if not student:
-        return "Student not found", 404  # Checks if the student exists
+        return "Student not found", 404
 
-    if request.method == 'POST':  # Check if method is POST 
-        # Update student details from the form
-        student.first_name = request.form.get('first_name')  # Get the first name from the the student details form
-        student.last_name = request.form.get('last_name')  # Get the last name from the student details form
-        student.ethnicity = request.form.get('ethnicity')  # Get the ehtnivcity from the student details form
-        student.home_language = request.form.get('home_language')  # Get the home language from the student details form
-        student.reading_age = request.form.get('reading_age')  # Get the reading age from the student details form
-        db.session.commit()  # Saves changes to the db
-        terms_columns = [term.term_name for term in Terms.query.order_by(Terms.term_id.asc()).limit(4).all()]  # Corrected term_id
-        return render_template('student_details.html', student=student, terms_columns=terms_columns, success=True, class_id=student.class_id, subject=determine_subject(student.class_id))  # Pass class_id and subject to the template
+    if request.method == 'POST':
+        student.first_name = request.form.get('first_name')
+        student.last_name = request.form.get('last_name')
+        student.ethnicity = request.form.get('ethnicity')
+        student.home_language = request.form.get('home_language')
+        student.reading_age = request.form.get('reading_age')
+        db.session.commit()
+        terms_columns = get_recent_terms()
+        navigation = get_navigation_context('views.student_details', student_id=student_id)
+        return render_template('student_details.html', student=student, terms_columns=terms_columns, success=True, class_id=student.class_id, subject=determine_subject(student.class_id), navigation=navigation)
 
-    class_info = Class.query.filter_by(class_id=student.class_id).first()  # Fetch the class information for the student
+    class_info = Class.query.filter_by(class_id=student.class_id).first()
     year_group = (
-        YearGroup.query  # Fetch the corresponding year group for the student
-        .join(Class, YearGroup.yeargroup_id == Class.yeargroup_id)  # Joins the YearGroup and Class tables
-        .filter(Class.class_id == student.class_id)  # Filters the classes by the student class_id
+        YearGroup.query
+        .join(Class, YearGroup.yeargroup_id == Class.yeargroup_id)
+        .filter(Class.class_id == student.class_id)
         .first()
     )
-    terms_columns = [term.term_name for term in Terms.query.order_by(Terms.term_id.asc()).limit(4).all()]  # Corrected term_id
-    return render_template('student_details.html', student=student, class_info=class_info, year_group=year_group, terms_columns=terms_columns, class_id=student.class_id, subject=determine_subject(student.class_id))  # Pass class_id and subject to the template
+    terms_columns = get_recent_terms()
+    navigation = get_navigation_context('views.student_details', student_id=student_id)
+    return render_template('student_details.html', student=student, class_info=class_info, year_group=year_group, terms_columns=terms_columns, class_id=student.class_id, subject=determine_subject(student.class_id), navigation=navigation)
 
-def determine_subject(class_id):  # Helper function to determine the subject based on the class Id
+def determine_subject(class_id):
     class_info = Class.query.filter_by(class_id=class_id).first()
-    if "Literature" in class_info.class_code:  # Example logic based on class name
+    if "Literature" in class_info.class_code:
         return "Literature"
     elif "Language" in class_info.class_code:
         return "Language"
     return "Unknown"
 
-@views.route('/student/<int:student_id>/projections')  # Define the route for student projections
+@views.route('/student/<int:student_id>/projections')
 def student_projections(student_id):
-    student_db = Student.query.get(student_id)  # Fetch the student by ID
+    student_db = Student.query.get(student_id)
     if not student_db:
-        return "Student not found", 404  # Return 404 if the student does not exist
+        return "Student not found", 404
 
-    # Use fetch logic to prepare data for predictions
     student_obj, class_code = fetch_student_for_prediction(student_id, db)
     if not student_obj:
-        return "Not enough data for projection", 404  # If no grades or subject data
+        return "Not enough data for projection", 404
 
-    # Create predictor and run predictions
     predictor = GradePredictor(student_obj)
     predictor.predict()
-    predictor.plot_projections()  # Generate and save the graph image
+    predictor.plot_projections()
 
-    all_projections = predictor.projections  # Dictionary of year-by-year subject grades
-    final_prediction = {subject: grade for subject, grade in predictor.get_predicted_grades().items()}  # Adjusted to handle string keys
+    all_projections = predictor.projections
+    final_prediction = {subject: grade for subject, grade in predictor.get_predicted_grades().items()}
 
+    navigation = get_navigation_context('views.student_projections', student_id=student_id)
     return render_template(
         'student_projections.html',
         student=student_db,
         projections=all_projections,
-        final_prediction=final_prediction,  # Adjusted to handle string keys
-        class_code=class_code
+        final_prediction=final_prediction,
+        class_code=class_code,
+        navigation=navigation
     )
 
-@views.route('/language/class/<int:class_id>')  # Define the route for language class students with a specific class ID
+
+@views.route('/language/class/<int:class_id>')
 def language_class_students(class_id):
-    students = Student.query.filter_by(class_id=class_id).all()  # Fetch students for the class
-    terms = Terms.query.order_by(Terms.term_id.asc()).limit(4).all()  # Corrected term_id
-    terms_columns = [term.term_name for term in terms]  # Fetch the term names to use as column names
+    return render_class_students_page(class_id, 1, "Language", 'views.language_class_students')
 
-    # Fetch grades for each student for each term for the "Language" subject
-    student_grades = {}
-    for student in students:
-        grades = {}
-        for term in terms:
-            grade = (
-                Grades.query.filter_by(student_id=student.student_id, term_id=term.term_id, subject_id=1)  # Corrected subject_id
-                .first()
-            )
-            grades[term.term_name] = grade.grade if grade else "N/A"  # Fetch grade or default to "N/A"
-        student_grades[student.student_id] = grades
-
-    return render_template('class_students.html', subject="Language", students=students, terms_columns=terms_columns, student_grades=student_grades)
-
-@views.route('/literature/class/<int:class_id>')  # Define the route for literature class students with a specific class ID
+@views.route('/literature/class/<int:class_id>')
 def literature_class_students(class_id):
-    students = Student.query.filter_by(class_id=class_id).all()  # Fetch students for the class
-    terms = Terms.query.order_by(Terms.term_id.asc()).limit(4).all()  # Corrected term_id
+    return render_class_students_page(class_id, 2, "Literature", 'views.literature_class_students')
+
+def render_class_students_page(class_id, subject_id, subject_name, route_name):
+    students = Student.query.filter_by(class_id=class_id).all()
+    terms = Terms.query.order_by(Terms.term_id.asc()).limit(4).all()
     terms_columns = [term.term_name for term in terms]
+    student_grades = get_student_grades_for_subject(students, terms, subject_id)
+    navigation = get_navigation_context(route_name, class_id=class_id)
+    return render_template('class_students.html', subject=subject_name, students=students, terms_columns=terms_columns, student_grades=student_grades, navigation=navigation)
 
-    # This iterates through a list of students fetched from the db and then iterates through the terms to get the grades for each student in the class for that specific term
-    student_grades = {}  # Creates a dictionary of students and their grades for each term
-    for student in students:
-        grades = {}  # Creates a dictionary of grades for each student
-        for term in terms:
-            grade = (
-                Grades.query.filter_by(student_id=student.student_id, term_id=term.term_id, subject_id=2)  # Corrected subject_id
-                .first() 
-            )
-            grades[term.term_name] = grade.grade if grade else "N/A"  # Fetches the grade for the student in that term or defaults to "N/A" if no grade is found
-        student_grades[student.student_id] = grades  # Adds the grades to the student_grades dictionary
-
-    return render_template('class_students.html', subject="Literature", students=students, terms_columns=terms_columns, student_grades=student_grades)  # Returns the class students page with the subject, students, term columns and student grades
-
-@views.route('/class/<int:class_id>')  # Define the route for class page with a specific class ID
+@views.route('/class/<int:class_id>')
 def class_page(class_id):
-    class_name = Class.query.filter_by(class_id=class_id).first().class_code  # Fetch class name
-    students = Student.query.filter_by(class_id=class_id).all()  # Fetch students for the class
-    terms_columns = [term.term_name for term in Terms.query.order_by(Terms.term_id.asc()).limit(4).all()]  # Corrected term_id
-    return render_template('class_page.html', class_name=class_name, students=students, terms_columns=terms_columns)  # Returns the class page with the class name, students and term columns
+    class_name = Class.query.filter_by(class_id=class_id).first().class_code
+    students = Student.query.filter_by(class_id=class_id).all()
+    terms_columns = get_recent_terms()
+    return render_template('class_page.html', class_name=class_name, students=students, terms_columns=terms_columns)
