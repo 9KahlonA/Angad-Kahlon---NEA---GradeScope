@@ -22,9 +22,9 @@ class ModifierEngine:
     def get_ethnicity_modifiers():
         return {
             'Indian': 1.28,
-            'Asian': 1.15,
+            'Asian': 1.16,
             'Mixed': 1.00,
-            'Black': 1.00,
+            'Black': 0.94,
             'White': 0.98,
         }
 
