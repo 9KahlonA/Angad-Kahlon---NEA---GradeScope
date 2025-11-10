@@ -5,7 +5,7 @@
     left: 0;
     width: 100%;
     height: 60px;
-    background: #2b2f2b; /* Updated background color */
+    background: #2b2f2b; 
     color: #f0f0f0;
     display: flex;
     align-items: center;
@@ -166,6 +166,7 @@
   }
 </style>
 <nav class="top-navbar">
+  <!-- Back button. Dynamically  displayed based on navigation path -->
   {% if navigation and navigation.show_back %}
   <div class="navbar-left">
     <a href="{{ url_for(navigation.back_url, **navigation.get('back_params', {})) }}" class="back-button" title="{{ navigation.back_text }}">
@@ -177,6 +178,7 @@
   </div>
   {% endif %}
   <a href="{{ url_for('auth.dashboard') }}" class="navbar-title">Gradescope</a>
+  <!-- Profile menu with logout dropdown -->
   <div class="profile-menu">
     <img src="{{ url_for('static', filename='assets/images/profile_icon.png') }}" alt="Profile" class="profile-icon">
     <div class="dropdown">
@@ -192,15 +194,15 @@
   </div>
 </nav>
 <script>
+// shows loading overlay and redirects to logout route, and the dropdown animation for logout
 document.getElementById('logout-button').addEventListener('click', function () {
   const loadingOverlay = document.createElement('div');
   loadingOverlay.className = 'loading-overlay active';
   loadingOverlay.innerHTML = '<div class="spinner"></div>';
   document.body.appendChild(loadingOverlay);
 
-  setTimeout(() => {
-    window.location.href = "{{ url_for('auth.login') }}";
-  }, 1000);
+  // Redirect to logout route which will clear session and redirect to login
+  window.location.href = "{{ url_for('auth.logout') }}";
 });
 </script>
 <div class="loading-overlay">

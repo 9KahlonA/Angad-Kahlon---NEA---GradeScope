@@ -6,8 +6,9 @@ Flask==2.3.3
 Flask-SQLAlchemy==3.0.5
 
 # Database
-PyMySQL==1.1.0
+PyMySQL>=1.1.0
 SQLAlchemy==2.0.21
+cryptography>=3.4.8
 
 # Security
 Werkzeug==2.3.7

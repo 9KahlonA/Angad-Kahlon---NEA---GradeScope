@@ -3,12 +3,15 @@ from .models import YearGroup, Class, Student, Terms, Grades
 from . import db
 from .Algorithms.fetch_and_predict import fetch_student_for_prediction
 from .Algorithms.Prediction_Model import GradePredictor
+from .auth import login_required
 
 views = Blueprint('views', __name__)
 
+# Retrieves the 4 most recent academic terms from database
 def get_recent_terms():
     return [term.term_name for term in Terms.query.order_by(Terms.term_id.asc()).limit(4).all()]
 
+# Fetches grades for all students in a subject across all terms
 def get_student_grades_for_subject(students, terms, subject_id):
     student_grades = {}
     for student in students:
@@ -23,6 +26,7 @@ def get_student_grades_for_subject(students, terms, subject_id):
         student_grades[student.student_id] = grades
     return student_grades
 
+# Determines navigation path (back button URL and text) based on current route
 def get_navigation_context(current_route, **kwargs):
     navigation = {
         'show_back': True,
@@ -84,33 +88,45 @@ def get_navigation_context(current_route, **kwargs):
     
     return navigation
 
+# Route for Language subject selection page
 @views.route('/language')
+@login_required
 def language():
     return render_subject_page('language', 'views.language')
 
+# Route for Literature subject selection page
 @views.route('/literature')
+@login_required
 def literature():
     return render_subject_page('literature', 'views.literature')
 
+# Renders subject page with year groups
 def render_subject_page(subject, route_name):
     year_groups = YearGroup.query.filter(YearGroup.year != 11).all()
     navigation = get_navigation_context(route_name)
     return render_template(f'{subject}.html', year_groups=year_groups, navigation=navigation)
 
+# Route for Language classes in a specific year group
 @views.route('/language/<int:year_group_id>')
+@login_required
 def language_classes(year_group_id): 
     return render_classes_page('language', year_group_id, 'views.language_classes')
 
+# Route for Literature classes in a specific year group
 @views.route('/literature/<int:year_group_id>')
+@login_required
 def literature_classes(year_group_id):
     return render_classes_page('literature', year_group_id, 'views.literature_classes')
 
+# Renders classes page for a subject and year group
 def render_classes_page(subject, year_group_id, route_name):
     classes = Class.query.filter_by(yeargroup_id=year_group_id).all()
     navigation = get_navigation_context(route_name)
     return render_template(f'{subject}_classes.html', classes=classes, year_group_id=year_group_id, navigation=navigation)
 
+# Route for viewing and editing student details
 @views.route('/student/<int:student_id>', methods=['GET', 'POST'])
+@login_required
 def student_details(student_id): 
     student = Student.query.filter_by(student_id=student_id).first()
     if not student:
@@ -138,6 +154,7 @@ def student_details(student_id):
     navigation = get_navigation_context('views.student_details', student_id=student_id)
     return render_template('student_details.html', student=student, class_info=class_info, year_group=year_group, terms_columns=terms_columns, class_id=student.class_id, subject=determine_subject(student.class_id), navigation=navigation)
 
+# Determines subject type (Language or Literature) from class code
 def determine_subject(class_id):
     class_info = Class.query.filter_by(class_id=class_id).first()
     if "Literature" in class_info.class_code:
@@ -146,7 +163,9 @@ def determine_subject(class_id):
         return "Language"
     return "Unknown"
 
+# Route for displaying grade projections for a student
 @views.route('/student/<int:student_id>/projections')
+@login_required
 def student_projections(student_id):
     student_db = Student.query.get(student_id)
     if not student_db:
@@ -174,14 +193,19 @@ def student_projections(student_id):
     )
 
 
+# Route for Language class students list with grades
 @views.route('/language/class/<int:class_id>')
+@login_required
 def language_class_students(class_id):
     return render_class_students_page(class_id, 1, "Language", 'views.language_class_students')
 
+# Route for Literature class students list with grades
 @views.route('/literature/class/<int:class_id>')
+@login_required
 def literature_class_students(class_id):
     return render_class_students_page(class_id, 2, "Literature", 'views.literature_class_students')
 
+# Renders class students page with student grades for a subject
 def render_class_students_page(class_id, subject_id, subject_name, route_name):
     students = Student.query.filter_by(class_id=class_id).all()
     terms = Terms.query.order_by(Terms.term_id.asc()).limit(4).all()
@@ -190,7 +214,9 @@ def render_class_students_page(class_id, subject_id, subject_name, route_name):
     navigation = get_navigation_context(route_name, class_id=class_id)
     return render_template('class_students.html', subject=subject_name, students=students, terms_columns=terms_columns, student_grades=student_grades, navigation=navigation)
 
+# Route for generic class page displaying all students
 @views.route('/class/<int:class_id>')
+@login_required
 def class_page(class_id):
     class_name = Class.query.filter_by(class_id=class_id).first().class_code
     students = Student.query.filter_by(class_id=class_id).all()

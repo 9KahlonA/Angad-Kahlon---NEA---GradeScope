@@ -78,6 +78,7 @@
   {% include 'navbar.html' %}
   <div class="container" style="margin-top: 80px;">
     <h1>English Language - Year Groups</h1>
+    <!-- displays available year groups with links to classes -->
     <table>
       <thead>
         <tr>
@@ -88,6 +89,7 @@
         {% for year_group in year_groups %}
         <tr>
           <td>
+            <!-- Links to Language classes page for selected year group -->
             <a href="{{ url_for('views.language_classes', year_group_id=year_group.yeargroup_id) }}">
               {{ year_group.year }}
             </a>

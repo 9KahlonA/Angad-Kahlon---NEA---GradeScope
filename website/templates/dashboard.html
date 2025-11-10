@@ -96,6 +96,7 @@
   <div class="container">
     <h1>GradeScope Dashboard</h1>
     
+    <!-- Links to Language and Literature pages for subject selection-->
     <div class="dashboard-grid">
       <div class="dashboard-card">
         <a href="{{ url_for('views.language') }}">
@@ -112,6 +113,7 @@
       </div>
     </div>
     
+    <!-- Navigates to search page for student search -->
     <div class="search-section">
       <h3>Student Search</h3>
       <button class="search-button" onclick="window.location.href='{{ url_for('auth.search_page') }}'">

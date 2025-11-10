@@ -26,7 +26,7 @@
       text-align: center;
       width: 90%;
       max-width: 700px;
-      margin-top: 100px; /* Adjust to avoid overlap with navbar */
+      margin-top: 100px; 
     }
 
     table {
@@ -92,6 +92,7 @@
 <body>
   {% include 'navbar.html' %}
   <div class="container">
+    <!-- triggers browser print dialog to download PDF -->
     <div style="text-align: center; margin-bottom: 20px;">
       <button onclick="downloadPDF()" 
               style="background-color: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
@@ -102,6 +103,7 @@
     <h1>Projections for {{ student.first_name }} {{ student.last_name }}</h1>
     <h3>Class: {{ class_code }}</h3>
 
+    <!-- Displays grade projections table for each subject by year and term -->
     {% for subject, year_data in projections.items() %}
       <h2>{{ subject }}</h2>
       <table>
@@ -122,15 +124,18 @@
       </table>
     {% endfor %}
 
+    <!-- Displays final GCSE predicted grades (Year 11 Term 4) -->
     <h2>Final GCSE Predicted Grades</h2>
     {% for subject, grade in final_prediction.items() %}
       <p><strong>{{ subject }}:</strong> {{ grade }}</p>
     {% endfor %}
 
+    <!-- Displays projection graph visualization -->
     <img src="{{ url_for('static', filename='assets/graph.png') }}" alt="Projection Graph">
   </div>
 
   <script>
+    // Triggers browser print dialog to save projections as PDF
     function downloadPDF() {
       const downloadBtn = document.querySelector('button[onclick="downloadPDF()"]');
       downloadBtn.style.display = 'none';

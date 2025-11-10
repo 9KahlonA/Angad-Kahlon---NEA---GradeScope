@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Login Page</title>
   <style>
+    /* Styling for Login Page Itself */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -79,6 +80,7 @@
       background: #3d5c44;
     }
 
+    /* Styling for Login Success/Fail */
     .flash-messages {
       margin-bottom: 20px;
     }
@@ -106,6 +108,7 @@
   <div class="login-container">
     <h1>GradeScope Login</h1>
     
+    <!-- Displays flash messages for login success/error feedback -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="flash-messages">
@@ -116,6 +119,7 @@
       {% endif %}
     {% endwith %}
     
+    <!-- Submits username and password for authentication -->
     <form method="POST">
       <div class="form-group">
         <label for="username">Username:</label>
@@ -131,6 +135,7 @@
     </form>
   </div>
 
+  <!-- Loading Animation -->
   <div class="loading-overlay">
     <div class="spinner"></div>
   </div>

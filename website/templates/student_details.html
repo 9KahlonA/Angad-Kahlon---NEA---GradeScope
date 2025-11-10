@@ -102,10 +102,12 @@
   <div class="container" style="margin-top: 80px;">
     <h1>Edit Student Details</h1>
     
+    <!-- Success message displayed after successful update -->
     {% if success %}
     <p class="success">Student details updated successfully!</p>
     {% endif %}
     
+    <!-- submits POST request to update database after student details are changed -->
     <form method="POST">
       
       <label for="first_name">First Name:</label>

@@ -86,6 +86,7 @@
   <div class="container" style="margin-top: 80px;">
     <h1>Language Classes for Year Group {{ year_group_id }}</h1>
     
+    <!-- displays available Language classes with links to student lists -->
     <table>
       <thead>
         <tr>
@@ -97,7 +98,7 @@
         {% for class in classes %}
         <tr>
           <td>
-            
+            <!-- Links to Language class students page for selected class -->
             <a href="{{ url_for('views.language_class_students', class_id=class.class_id) }}">
               {{ class.class_code }}
             </a>

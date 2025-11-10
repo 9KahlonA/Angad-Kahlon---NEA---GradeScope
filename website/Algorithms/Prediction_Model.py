@@ -3,6 +3,7 @@ import numpy as np
 import random
 
 class Student:
+    # Creates the student object with the related attributes needed for the model
     def __init__(self, student_id, reading_age, is_efl, ethnicity, current_year, first_name="Unknown", last_name="Student", class_code="Unknown Class"):
         self.student_id = student_id
         self.reading_age = reading_age
@@ -14,10 +15,12 @@ class Student:
         self.class_code = class_code
         self.subjects = {}
 
+    # Adds grade data for a subject organized by term
     def add_grades(self, subject, grades_by_term):
         self.subjects[subject] = grades_by_term
 
 class ModifierEngine:
+    # Returns ethnicity-based multipliers for growth rate calculations
     @staticmethod
     def get_ethnicity_modifiers():
         return {
@@ -28,6 +31,7 @@ class ModifierEngine:
             'White': 0.98,
         }
 
+    # Adjusts growth rate based on student features (EFL status, reading age, years remaining)
     @staticmethod
     def apply_feature_modifiers(student, growth_rate):
         if student.is_efl:
@@ -37,12 +41,14 @@ class ModifierEngine:
         elif student.reading_age > 12.0:
             growth_rate *= 1.08
 
+        # Adjusts the gorwth rate depending on the amount of years left trill GCSEs
         years_left = 11 - student.current_year
         if years_left > 0:
             growth_rate *= 1 + (years_left * 0.03)
 
         return growth_rate
 
+    # Applies ethnicity and gender modifiers to the growth rate
     @staticmethod
     def apply_ethnicity_modifiers(student, growth_rate):
         ethnicity_modifiers = ModifierEngine.get_ethnicity_modifiers()
@@ -59,6 +65,7 @@ class ModifierEngine:
         return growth_rate
 
 class GradeLimiter:
+    # Sets the maximum achievable grade based on target year and ethnicity
     @staticmethod
     def get_age_appropriate_max(target_year, ethnicity, base_max):
         if target_year == 7:
@@ -82,6 +89,7 @@ class GradeLimiter:
             else:
                 return min(base_max, 8)
 
+    # Calculates base maximum grade based on current performance and ethnicity
     @staticmethod
     def get_base_max_grade(current_max, ethnicity):
         if current_max >= 7:
@@ -105,6 +113,7 @@ class GradeLimiter:
             return 5
 
 class ChallengeSimulator:
+    # Applies realistic grade reductions based on academic challenges and timing
     @staticmethod
     def apply_realistic_challenges(projected, current_term, year_offset, term, student_current_year):
         if year_offset == 11 and term <= 2:
@@ -128,6 +137,7 @@ class ChallengeSimulator:
         return projected
 
 class GrowthCalculator:
+    # Calculates base growth rate from historical grade progression
     @staticmethod
     def calculate_base_growth(numeric_grades):
         if len(numeric_grades) > 1:
@@ -139,6 +149,7 @@ class GrowthCalculator:
         base_growth = max(base_growth, 0.15)
         return base_growth
 
+    # Adjusts growth rate based on current performance level for realistic GCSE predictions
     @staticmethod
     def apply_gcse_reality_check(base_growth, current_max):
         if current_max <= 4:
@@ -148,10 +159,12 @@ class GrowthCalculator:
         return base_growth
 
 class GradePredictor:
+    # Initializes predictor with student data
     def __init__(self, student: Student):
         self.student = student
         self.projections = {}
 
+    # Converts the clump of grade data into anordered list of numeric grades
     def _process_subject_grades(self, grades):
         term_order = ['Autumn', 'Spring', 'Summer']
         numeric_grades = []
@@ -162,6 +175,7 @@ class GradePredictor:
         
         return numeric_grades
 
+    # Calculates adjusted growth rate using base growth and student modifiers
     def _calculate_growth_rate(self, numeric_grades):
         base_growth = GrowthCalculator.calculate_base_growth(numeric_grades)
         base_growth = GrowthCalculator.apply_gcse_reality_check(base_growth, max(numeric_grades))
@@ -171,6 +185,7 @@ class GradePredictor:
         
         return growth
 
+    # Generates projected grade for a specific term with variability and challenges applied
     def _generate_term_projection(self, year_offset, term, last_grade, growth, total_terms, 
                                  current_term, target_year_max, ethnicity):
         terms_per_year = 4
@@ -207,6 +222,9 @@ class GradePredictor:
         
         return projected
 
+    # Main prediction method
+    # this generates grade projections for all students till their GCSEs
+    # Combines the prevously methods to predcit grades
     def predict(self):
         random.seed(self.student.student_id)
         np.random.seed(self.student.student_id)
@@ -252,9 +270,11 @@ class GradePredictor:
 
             self.projections[subject] = proj
 
+    # Returns final predicted grades for Year 11 Term 4 (GCSE predictions)
     def get_predicted_grades(self):
         return {subj: grades.get("Year 11 Term 4", "N/A") for subj, grades in self.projections.items()}
 
+    # Creates and saves visualization graph of grade projections
     def plot_projections(self):
         current_year = self.student.current_year
         future_projections = {}
@@ -278,6 +298,7 @@ class GradePredictor:
         class_name = getattr(self.student, 'class_code', 'Unknown Class')
         plt.title(f"Grade Projection for {student_name} ({class_name})")
         
+        # Sets the style and data for the physical projection
         plt.ylabel("Predicted Grade")
         plt.xlabel("Academic Year and Term")
         plt.ylim(0, 10)
