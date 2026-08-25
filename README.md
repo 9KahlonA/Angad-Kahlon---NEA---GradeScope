@@ -1,5 +1,4 @@
-**GradeScope
-**
+GradeScope
 GradeScope is a full-stack web application developed as my A Level Computer Science NEA. The system is designed to help students understand their academic progress by providing grade information and predicting potential future grades.
 
 Overview
